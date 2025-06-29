@@ -1,23 +1,26 @@
 require("dotenv").config();
-const config = require("./config.json");
 const mongoose = require("mongoose");
+const express = require("express");
+const cors = require("cors");
+const jwt = require('jsonwebtoken');
+const { authenticateToken } = require("./utilities");
 
-mongoose.connect(config.connectString);
+// Connect to MongoDB
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log("✅ MongoDB Connected"))
+  .catch((err) => console.error("❌ MongoDB connection error:", err));
 
+// Models
 const User = require("./models/user.model");
 const Friend = require("./models/friend.model");
 const Problem = require("./models/problem.model");
 
-const express = require("express");
-const cors = require("cors");
-const app= express();
-const jwt = require('jsonwebtoken');
-const {authenticateToken} = require("./utilities");
-app.use(express.json());
+// Setup app
+const PORT = process.env.PORT || 5000;
 
-app.use(
-    cors({origin: "*",})
-);
+const app = express();
+app.use(express.json());
+app.use(cors({ origin: "*" }));
 
 app.post("/create-account", async(req, res) =>{
     if (!req.body) {
@@ -334,13 +337,14 @@ app.get("/search-friend/", authenticateToken, async(req,res)=>{
 const path = require("path");
 
 // Serve React frontend build
-app.use(express.static(path.join(__dirname, "../frontend/cp_help/build")));
+// app.use(express.static(path.join(__dirname, "../frontend/cp_help/build")));
 
-app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../frontend/cp_help/build", "index.html"));
+// app.get("/*", (req, res) => {
+//     res.sendFile(path.join(__dirname, "../frontend/cp_help/build", "index.html"));
+// });
+
+
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
 });
-
-
-
-app.listen(8000);
 module.exports = app;
