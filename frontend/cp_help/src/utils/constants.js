@@ -1,1 +1,1 @@
-export const BASE_URL = 'https://code-sphere-ro8g.onrender.com'
+export const BASE_URL = 'https://code-sphere-1-0sn0.onrender.com'
