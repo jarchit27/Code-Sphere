@@ -331,5 +331,16 @@ app.get("/search-friend/", authenticateToken, async(req,res)=>{
     }
 });
 
+const path = require("path");
+
+// Serve React frontend build
+app.use(express.static(path.join(__dirname, "../frontend/cp_help/build")));
+
+app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../frontend/cp_help/build", "index.html"));
+});
+
+
+
 app.listen(8000);
 module.exports = app;
